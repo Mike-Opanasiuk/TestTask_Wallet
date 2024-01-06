@@ -17,4 +17,9 @@ public class AppConstant
     {
         public static readonly TimeSpan Default = TimeSpan.FromHours(12);
     }
+
+    public record CardLimits
+    {
+        public const decimal Default = 1500;
+    }
 }

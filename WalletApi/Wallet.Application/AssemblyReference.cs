@@ -3,3 +3,7 @@
 public class MediatrAssemblyReference
 {
 }
+
+public class FluentValidationAssemblyReference
+{
+}

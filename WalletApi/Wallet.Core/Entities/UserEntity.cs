@@ -8,4 +8,6 @@ public class UserEntity : IdentityUser<Guid>, IEntity
     public DateTime CreatedOn { get; set; }
     public DateTime ModifiedOn { get; set; }
     public string? Name { get; set; }
+
+    public ICollection<CardEntity> Cards = new List<CardEntity>(); 
 }
