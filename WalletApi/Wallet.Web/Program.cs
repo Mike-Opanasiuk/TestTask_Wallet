@@ -6,6 +6,7 @@ using Wallet.Core.Entities;
 using Wallet.Infrastructure;
 using Wallet.Web;
 using Wallet.Web.Extensions;
+using Wallet.Web.Middlewares.ExceptionHandlingMiddleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,8 @@ builder.Services.AddMediatR(conf => conf.RegisterServicesFromAssembly(typeof(Med
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseSeed();
 
