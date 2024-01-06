@@ -22,5 +22,12 @@ namespace Wallet.Web.Controllers
         {
             return await mediator.Send(command);
         }
+
+
+        [HttpPost("login")]
+        public async Task<ActionResult<AuthResponse>> LoginAsync([FromBody] LoginUserCommand command)
+        {
+            return await mediator.Send(command);
+        }
     }
 }
