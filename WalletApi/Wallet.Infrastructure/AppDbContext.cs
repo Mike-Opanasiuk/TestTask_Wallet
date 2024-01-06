@@ -7,6 +7,9 @@ namespace Wallet.Infrastructure;
 
 public class AppDbContext : IdentityDbContext<UserEntity, RoleEntity, Guid>
 {
+    public DbSet<CardEntity> Cards { get; set; }
+    public DbSet<PointEntity> Points { get; set; }
+
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {

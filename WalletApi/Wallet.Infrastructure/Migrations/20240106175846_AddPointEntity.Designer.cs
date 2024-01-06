@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Wallet.Infrastructure;
@@ -11,9 +12,11 @@ using Wallet.Infrastructure;
 namespace Wallet.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240106175846_AddPointEntity")]
+    partial class AddPointEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,7 +157,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Cards");
+                    b.ToTable("CardEntity");
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.PointEntity", b =>
@@ -183,7 +186,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasIndex("CardId");
 
-                    b.ToTable("Points");
+                    b.ToTable("PointEntity");
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.RoleEntity", b =>

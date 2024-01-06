@@ -16,9 +16,9 @@ public static partial class WebApplicationExtensions
             var context = scope.ServiceProvider.GetService<AppDbContext>();
             var roleManager = scope.ServiceProvider.GetService<RoleManager<RoleEntity>>();
 
-            context.Database.Migrate();
+            context?.Database.Migrate();
 
-            SeedRoles(roleManager).Wait();
+            SeedRoles(roleManager!).Wait();
         }
     }
 

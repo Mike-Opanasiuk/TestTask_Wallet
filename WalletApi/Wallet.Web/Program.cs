@@ -11,6 +11,9 @@ using Wallet.Web.Extensions;
 using Wallet.Web.Middlewares.ExceptionHandlingMiddleware;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Hangfire;
+using Hangfire.PostgreSql;
+using Wallet.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,10 +31,19 @@ builder.Services.AddBearer(builder.Configuration.GetValue<string>("Jwt:Secret")!
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+       // to ingore loop inside entities that reference each other
+       options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+   );
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
+builder.Services.AddHangfire(x =>
+    x.UsePostgreSqlStorage(options => 
+        options.UseNpgsqlConnection(builder.Configuration.GetConnectionString("Default"))));
+
+builder.Services.AddHangfireServer();
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(FluentValidationAssemblyReference), ServiceLifetime.Transient);
@@ -59,5 +71,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseHangfireDashboard();
+
+RecurringJob.AddOrUpdate<PointsService>("UpdatePointsJob", x => x.AddPointsAsync(), @"0 4 * * *");
 
 app.Run();

@@ -3,6 +3,7 @@ using Wallet.Core.Entities.Abstract;
 
 namespace Wallet.Core.Entities;
 
+[Table("Cards")]
 public class CardEntity : BaseEntity
 {
     public decimal MaxLimit { get; set; }
@@ -13,5 +14,7 @@ public class CardEntity : BaseEntity
 
     public Guid OwnerId { get; set; }
 
-    public UserEntity Owner { get; set; }
+    public required UserEntity Owner { get; set; }
+
+    public ICollection<PointEntity> Points = new List<PointEntity>();
 }

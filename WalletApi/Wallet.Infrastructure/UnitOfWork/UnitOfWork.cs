@@ -10,12 +10,14 @@ public class UnitOfWork : IUnitOfWork, IDisposable
     private readonly AppDbContext context;
 
     public IRepository<CardEntity> Cards { get; }
+    public IRepository<PointEntity> Points { get; }
 
     public UnitOfWork(AppDbContext context)
     {
         this.context = context;
 
         Cards = new Repository<CardEntity>(context);
+        Points = new Repository<PointEntity>(context);
     }
 
     public void Dispose()
