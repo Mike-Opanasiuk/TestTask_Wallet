@@ -1,15 +1,10 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Wallet.Application.Features.AccountFeatures.Commands;
-using Wallet.Application.Features.AccountFeatures.Dtos;
 using Wallet.Application.Features.CardFeatures.Commands;
 using Wallet.Application.Features.CardFeatures.Dtos;
 using Wallet.Application.Features.CardFeatures.Queries;
-using Wallet.Application.Features.TransactionFeatures.Dtos;
-using Wallet.Application.Features.TransactionFeatures.Queries;
 using static Wallet.Shared.AppConstant;
 
 namespace Wallet.Web.Controllers;
@@ -39,14 +34,14 @@ public class CardsController : ControllerBase
         await mediator.Send(command);
     }
 
-    [HttpGet("{cardId}")]
+    [HttpGet]
     [Authorize]
-    public async Task<ActionResult<CardDto>> GetCardByIdAsync([FromRoute] Guid cardId)
+    public async Task<ActionResult<CardDto>> GetCardByIdAsync([FromQuery] GetCardByIdRequest request)
     {
-        return await mediator.Send(new GetCardByIdQuery()
-        {
-            Id = cardId,
-            AuthorizedUserId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == Claims.Id)!.Value)
-        });
+        var query = mapper.Map<GetCardByIdQuery>(request);
+
+        query.AuthorizedUserId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == Claims.Id)!.Value);
+
+        return await mediator.Send(query);
     }
 }

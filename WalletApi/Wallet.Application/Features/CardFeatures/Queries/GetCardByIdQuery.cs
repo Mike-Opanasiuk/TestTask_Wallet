@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Wallet.Application.Features.CardFeatures.Dtos;
 using Wallet.Application.Features.TransactionFeatures.Dtos;
+using Wallet.Core.Entities;
 using Wallet.Infrastructure.UnitOfWork.Abstract;
 using Wallet.Shared.CustomExceptions;
 using static Wallet.Shared.AppConstant;
@@ -10,12 +11,16 @@ using static Wallet.Shared.AppConstant;
 namespace Wallet.Application.Features.CardFeatures.Queries;
 
 
-public record GetCardByIdQuery : IRequest<CardDto>
+public record GetCardByIdRequest
 {
     public Guid Id { get; set; }
     public int Page { get; set; }
     public int PerPage { get; set; }
     public string? SearchString { get; set; }
+}
+
+public record GetCardByIdQuery : GetCardByIdRequest, IRequest<CardDto>
+{
     public Guid AuthorizedUserId { get; set; }
 }
 
@@ -52,8 +57,14 @@ public class GetCardByIdQueryHandler : IRequestHandler<GetCardByIdQuery, CardDto
             .Include(c => c.Type)
             .Include(c => c.Status)
             .Include(c => c.Category)
+            .Include(c => c.AuthorizedUser)
             .OrderByDescending(c => c.CreatedOn)
             .Where(c => c.CardId == id);
+
+        if(!string.IsNullOrEmpty(request.SearchString))
+        {
+            transactions = transactions.Where(t => t.Category.Name.ToLower().Contains(request.SearchString.ToLower()));
+        }
 
         transactions = Paginate(
            transactions,
@@ -70,13 +81,19 @@ public class GetCardByIdQueryHandler : IRequestHandler<GetCardByIdQuery, CardDto
 
         var cardDto = mapper.Map<CardDto>(card);
 
-        cardDto.Transactions = mapper.Map<ICollection<TransactionDto>>(transactions);
+        // after transactions being paginated we can convert them to list
+        AddAuthorizedUsersPrepositions(request.AuthorizedUserId, transactions.ToList());
+
+        cardDto.Transactions = mapper.Map<List<TransactionDto>>(transactions);
+
+        
         cardDto.TotalTransactionsPages = totalPages;
 
         if (todayPoints != null)
         {
             cardDto.Points = FormatPoints(todayPoints.Amount);
         }
+        else cardDto.Points = "0";
 
         return cardDto;
     }
@@ -112,6 +129,17 @@ public class GetCardByIdQueryHandler : IRequestHandler<GetCardByIdQuery, CardDto
         {
             double roundedPoints = Math.Round((double)points / 1000.0, 1);
             return $"{roundedPoints}K";
+        }
+    }
+
+    private void AddAuthorizedUsersPrepositions(Guid currUserId, List<TransactionEntity> transactions)
+    {
+        for (int i = 0; i < transactions.Count(); i++)
+        {
+            if(currUserId != transactions[i].AuthorizedUserId)
+            {
+                transactions[i].Description = transactions[i].AuthorizedUser!.Name + " - " + transactions[i].Description;
+            }
         }
     }
 }

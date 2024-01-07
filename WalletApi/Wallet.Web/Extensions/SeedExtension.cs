@@ -18,8 +18,6 @@ public static partial class WebApplicationExtensions
             var roleManager = scope.ServiceProvider.GetService<RoleManager<RoleEntity>>();
             var imageService = scope.ServiceProvider.GetService<IImageService>();
 
-            await context!.Database.MigrateAsync();
-
             await SeedRoles(roleManager!);
             await SeedTransactionTypesAsync(context!);
             await SeedTransactionStatusesAsync(context!);

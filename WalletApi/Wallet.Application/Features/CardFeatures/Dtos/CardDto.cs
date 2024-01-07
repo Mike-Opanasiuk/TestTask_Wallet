@@ -9,7 +9,7 @@ public record CardDto
     public decimal Available { get; set; }
     public string Points { get; set; }
 
-    public ICollection<TransactionDto> Transactions = new List<TransactionDto>();
+    public List<TransactionDto> Transactions = new List<TransactionDto>();
 
     public int TotalTransactionsPages { get; set; }
 }

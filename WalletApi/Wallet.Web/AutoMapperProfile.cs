@@ -3,6 +3,7 @@ using Wallet.Application.Features.AccountFeatures.Commands;
 using Wallet.Application.Features.AccountFeatures.Dtos;
 using Wallet.Application.Features.CardFeatures.Commands;
 using Wallet.Application.Features.CardFeatures.Dtos;
+using Wallet.Application.Features.CardFeatures.Queries;
 using Wallet.Application.Features.TransactionFeatures.Commands;
 using Wallet.Application.Features.TransactionFeatures.Dtos;
 using Wallet.Core.Entities;
@@ -24,6 +25,7 @@ public class AutoMapperProfile : Profile
         CreateMap<CreateCardCommand, CardEntity>();
         CreateMap<CreateCardRequest, CreateCardCommand>();
         CreateMap<CardEntity, CardDto>();
+        CreateMap<GetCardByIdRequest, GetCardByIdQuery>();
 
         /* Transactions */
         CreateMap<CreateTransactionCommand, TransactionEntity>();
@@ -36,8 +38,8 @@ public class AutoMapperProfile : Profile
                 (src.TypeId == AppConstant.TransactionTypes.Payment.Key ? "+" + src.Sum : src.Sum.ToString())))
             .ForMember(dest => dest.Date, act => act.MapFrom(src =>
                 (src.CreatedOn > DateTime.Now.Subtract(TimeSpan.FromDays(7)) ? 
-                                                                                src.CreatedOn.DayOfWeek.ToString() : 
-                                                                                src.CreatedOn.ToString("dd/MM/yy"))));
+                                                           src.CreatedOn.DayOfWeek.ToString() : 
+                                                           src.CreatedOn.ToString("dd/MM/yy"))));
 
     }
 }
