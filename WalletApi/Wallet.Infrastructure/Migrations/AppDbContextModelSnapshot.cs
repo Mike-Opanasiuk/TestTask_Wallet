@@ -154,7 +154,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Cards");
+                    b.ToTable("Cards", (string)null);
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.PointEntity", b =>
@@ -183,7 +183,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasIndex("CardId");
 
-                    b.ToTable("Points");
+                    b.ToTable("Points", (string)null);
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.RoleEntity", b =>
@@ -251,7 +251,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransactionCategories");
+                    b.ToTable("TransactionCategories", (string)null);
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.TransactionEntity", b =>
@@ -304,7 +304,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transactions", (string)null);
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.TransactionStatusEntity", b =>
@@ -329,7 +329,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransactionStatuses");
+                    b.ToTable("TransactionStatuses", (string)null);
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.TransactionTypeEntity", b =>
@@ -354,7 +354,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransactionTypes");
+                    b.ToTable("TransactionTypes", (string)null);
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.UserEntity", b =>

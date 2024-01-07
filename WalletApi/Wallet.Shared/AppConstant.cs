@@ -18,6 +18,12 @@ public class AppConstant
         public static readonly TimeSpan Default = TimeSpan.FromHours(12);
     }
 
+    public record Paging
+    {
+        public const int DefaultPage = 1;
+        public const int DefaultPerPage = 10;
+    }
+
     public record FireBase
     {
         public const string Url = "wallet-3018e.appspot.com";

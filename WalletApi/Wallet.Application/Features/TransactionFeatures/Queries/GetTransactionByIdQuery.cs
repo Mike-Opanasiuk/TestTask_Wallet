@@ -6,6 +6,7 @@ using Wallet.Infrastructure.UnitOfWork.Abstract;
 using Wallet.Shared.CustomExceptions;
 
 namespace Wallet.Application.Features.TransactionFeatures.Queries;
+
 public record GetTransactionByIdQuery : IRequest<TransactionDto>
 {
     public Guid Id { get; set; }

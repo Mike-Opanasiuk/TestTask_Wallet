@@ -14,6 +14,7 @@ public class TransactionEntity : BaseEntity
     public UserEntity? AuthorizedUser { get; set; }
 
     public Guid CardId { get; set; }
+
     public CardEntity Card { get; set; }
 
     public Guid TypeId { get; set; }

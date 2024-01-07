@@ -16,6 +16,7 @@ public class CardEntity : BaseEntity
 
     public required UserEntity Owner { get; set; }
 
-    public ICollection<PointEntity> Points = new List<PointEntity>();
-    public ICollection<TransactionEntity> Transactions = new List<TransactionEntity>();
+    public ICollection<PointEntity> Points { get; set; } = new List<PointEntity>();
+
+    public ICollection<TransactionEntity> Transactions { get; set; } = new List<TransactionEntity>();
 }

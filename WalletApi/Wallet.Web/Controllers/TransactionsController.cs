@@ -34,7 +34,7 @@ public class TransactionsController : ControllerBase
 
     [HttpGet("{transactionId}")]
     [Authorize]
-    public async Task<ActionResult<TransactionDto>> GetCollectionsAsync([FromRoute] Guid transactionId)
+    public async Task<ActionResult<TransactionDto>> GetTransactionByIdAsync([FromRoute] Guid transactionId)
     {
         return await mediator.Send(new GetTransactionByIdQuery() 
         { 
