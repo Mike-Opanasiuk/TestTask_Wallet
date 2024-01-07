@@ -12,24 +12,19 @@ internal class TransactionEntityConfiguration
         base.Configure(builder);
 
         builder
-            .HasOne(t => t.TransactionType)
+            .HasOne(t => t.Type)
             .WithMany(tt => tt.Transactions)
-            .HasForeignKey(t => t.TransactionTypeId);
+            .HasForeignKey(t => t.TypeId);
 
         builder
-            .HasOne(t => t.TransactionCategory)
+            .HasOne(t => t.Category)
             .WithMany(tc => tc.Transactions)
-            .HasForeignKey(t => t.TransactionCategoryId);
+            .HasForeignKey(t => t.CategoryId);
 
         builder
-            .HasOne(t => t.TransactionStatus)
+            .HasOne(t => t.Status)
             .WithMany(ts => ts.Transactions)
-            .HasForeignKey(t => t.TransactionStatusId);
-
-        builder
-            .HasOne(t => t.TransactionStatus)
-            .WithMany(ts => ts.Transactions)
-            .HasForeignKey(t => t.TransactionStatusId);
+            .HasForeignKey(t => t.StatusId);
 
         builder
             .HasOne(t => t.AuthorizedUser)

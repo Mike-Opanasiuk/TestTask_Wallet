@@ -14,9 +14,9 @@ public record CreateTransactionCommand : IRequest
 {
     public decimal Sum { get; set; }
     public string? Description { get; set; }
-    public Guid TransactionTypeId { get; set; }
-    public Guid TransactionCategoryId { get; set; }
-    public Guid TransactionStatusId { get; set; }
+    public Guid TypeId { get; set; }
+    public Guid CategoryId { get; set; }
+    public Guid StatusId { get; set; }
     public Guid CardId { get; set; }
     public Guid AuthorizedUserId { get; set; }
 }
@@ -36,38 +36,11 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
 
     public async Task Handle(CreateTransactionCommand request, CancellationToken cancellationToken)
     {
+        await CheckIdsCorrectnessAsync(request);
+
         var card = await unitOfWork.Cards.FindAsync(request.CardId);
 
-        #region Ids existance check
-
-        if (card is null)
-        {
-            throw new BadRequestException($"Card with id {request.CardId} was not found.");
-        }
-
-        if((await unitOfWork.TransactionTypes.FindAsync(request.TransactionTypeId)) is null)
-        {
-            throw new BadRequestException($"Transaction type with id {request.TransactionTypeId} was not found.");
-        }
-
-        if ((await unitOfWork.TransactionStatuses.FindAsync(request.TransactionStatusId)) is null)
-        {
-            throw new BadRequestException($"Transaction status with id {request.TransactionStatusId} was not found.");
-        }
-
-        if ((await unitOfWork.TransactionCategories.FindAsync(request.TransactionCategoryId)) is null)
-        {
-            throw new BadRequestException($"Transaction category with id {request.TransactionCategoryId} was not found.");
-        }
-
-        if((await userManager.FindByIdAsync(request.AuthorizedUserId.ToString())) is null)
-        {
-            throw new BadRequestException($"Authorized user with id {request.AuthorizedUserId} was not found.");
-        }
-
-        #endregion
-
-        if (request.TransactionTypeId == AppConstant.TransactionTypes.Credit.Key)
+        if (request.TypeId == AppConstant.TransactionTypes.Credit.Key)
         {
             card.Balance -= request.Sum;
         }
@@ -90,6 +63,34 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
             throw new Exception("No transactions were added.");
         }
     }
+
+    private async Task CheckIdsCorrectnessAsync(CreateTransactionCommand request)
+    {
+        if ((await unitOfWork.Cards.FindAsync(request.CardId)) is null)
+        {
+            throw new BadRequestException($"Card with id {request.CardId} was not found.");
+        }
+
+        if ((await unitOfWork.TransactionTypes.FindAsync(request.TypeId)) is null)
+        {
+            throw new BadRequestException($"Transaction type with id {request.TypeId} was not found.");
+        }
+
+        if ((await unitOfWork.TransactionStatuses.FindAsync(request.StatusId)) is null)
+        {
+            throw new BadRequestException($"Transaction status with id {request.StatusId} was not found.");
+        }
+
+        if ((await unitOfWork.TransactionCategories.FindAsync(request.CategoryId)) is null)
+        {
+            throw new BadRequestException($"Transaction category with id {request.CategoryId} was not found.");
+        }
+
+        if ((await userManager.FindByIdAsync(request.AuthorizedUserId.ToString())) is null)
+        {
+            throw new BadRequestException($"Authorized user with id {request.AuthorizedUserId} was not found.");
+        }
+    }
 }
 
 public class CreateTransactionRequestValidator : AbstractValidator<CreateTransactionCommand>
@@ -99,8 +100,8 @@ public class CreateTransactionRequestValidator : AbstractValidator<CreateTransac
         RuleFor(c => c.Sum).GreaterThanOrEqualTo(0);
 
         RuleFor(c => c.CardId).NotEmpty().NotNull();
-        RuleFor(c => c.TransactionStatusId).NotEmpty().NotNull();
-        RuleFor(c => c.TransactionTypeId).NotEmpty().NotNull();
-        RuleFor(c => c.TransactionCategoryId).NotEmpty().NotNull(); ;
+        RuleFor(c => c.StatusId).NotEmpty().NotNull();
+        RuleFor(c => c.TypeId).NotEmpty().NotNull();
+        RuleFor(c => c.CategoryId).NotEmpty().NotNull();
     }
 }

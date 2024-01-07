@@ -16,12 +16,12 @@ public class TransactionEntity : BaseEntity
     public Guid CardId { get; set; }
     public CardEntity Card { get; set; }
 
-    public Guid TransactionTypeId { get; set; }
-    public TransactionTypeEntity TransactionType { get; set; }
+    public Guid TypeId { get; set; }
+    public TransactionTypeEntity Type { get; set; }
 
-    public Guid TransactionCategoryId { get; set; }
-    public TransactionCategoryEntity TransactionCategory { get; set; }
+    public Guid CategoryId { get; set; }
+    public TransactionCategoryEntity Category { get; set; }
 
-    public Guid TransactionStatusId { get; set; }
-    public TransactionStatusEntity TransactionStatus { get; set; }
+    public Guid StatusId { get; set; }
+    public TransactionStatusEntity Status { get; set; }
 }

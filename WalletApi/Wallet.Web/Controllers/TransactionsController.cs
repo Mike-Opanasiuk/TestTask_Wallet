@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static Wallet.Shared.AppConstant;
 using Wallet.Application.Features.TransactionFeatures.Commands;
+using Wallet.Application.Features.TransactionFeatures.Dtos;
+using Wallet.Application.Features.TransactionFeatures.Queries;
 
 namespace Wallet.Web.Controllers;
 
@@ -27,5 +29,17 @@ public class TransactionsController : ControllerBase
             request.AuthorizedUserId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == Claims.Id)!.Value);
 
         await mediator.Send(request);
+    }
+
+
+    [HttpGet("{transactionId}")]
+    [Authorize]
+    public async Task<ActionResult<TransactionDto>> GetCollectionsAsync([FromRoute] Guid transactionId)
+    {
+        return await mediator.Send(new GetTransactionByIdQuery() 
+        { 
+            Id = transactionId,
+            AuthorizedUserId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == Claims.Id)!.Value)
+        });
     }
 }
