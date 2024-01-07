@@ -11,6 +11,10 @@ public class UnitOfWork : IUnitOfWork, IDisposable
 
     public IRepository<CardEntity> Cards { get; }
     public IRepository<PointEntity> Points { get; }
+    public IRepository<TransactionEntity> Transactions { get; }
+    public IRepository<TransactionTypeEntity> TransactionTypes { get; }
+    public IRepository<TransactionStatusEntity> TransactionStatuses { get; }
+    public IRepository<TransactionCategoryEntity> TransactionCategories { get; }
 
     public UnitOfWork(AppDbContext context)
     {
@@ -18,6 +22,10 @@ public class UnitOfWork : IUnitOfWork, IDisposable
 
         Cards = new Repository<CardEntity>(context);
         Points = new Repository<PointEntity>(context);
+        Transactions = new Repository<TransactionEntity>(context);
+        TransactionTypes = new Repository<TransactionTypeEntity>(context);
+        TransactionStatuses = new Repository<TransactionStatusEntity>(context);
+        TransactionCategories = new Repository<TransactionCategoryEntity>(context);
     }
 
     public void Dispose()

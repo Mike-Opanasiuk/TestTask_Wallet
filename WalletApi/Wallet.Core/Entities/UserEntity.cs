@@ -10,4 +10,7 @@ public class UserEntity : IdentityUser<Guid>, IEntity
     public string? Name { get; set; }
 
     public ICollection<CardEntity> Cards = new List<CardEntity>(); 
+
+    // transaction where this user is 'AuthoredUser'
+    public ICollection<TransactionEntity> Transactions = new List<TransactionEntity>();
 }

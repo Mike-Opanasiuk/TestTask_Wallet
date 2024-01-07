@@ -26,7 +26,7 @@ public class CardsController : ControllerBase
 
     [HttpPost("create")]
     [Authorize]
-    public async Task RegisterAsync([FromBody] CreateCardRequest request)
+    public async Task CreateCardAsync([FromBody] CreateCardRequest request)
     {
         var command = mapper.Map<CreateCardCommand>(request);
 

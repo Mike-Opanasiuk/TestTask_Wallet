@@ -2,6 +2,7 @@
 using Wallet.Application.Features.AccountFeatures.Commands;
 using Wallet.Application.Features.AccountFeatures.Dtos;
 using Wallet.Application.Features.CardFeatures.Commands;
+using Wallet.Application.Features.TransactionFeatures.Commands;
 using Wallet.Core.Entities;
 
 namespace Wallet.Web;
@@ -19,5 +20,6 @@ public class AutoMapperProfile : Profile
 
         CreateMap<CreateCardCommand, CardEntity>();
         CreateMap<CreateCardRequest, CreateCardCommand>();
+        CreateMap<CreateTransactionCommand, TransactionEntity>();
     }
 }

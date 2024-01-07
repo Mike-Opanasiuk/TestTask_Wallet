@@ -14,6 +14,8 @@ using FluentValidation.AspNetCore;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Wallet.Web.Services;
+using static Wallet.Shared.AppConstant;
+using Wallet.Shared.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +31,7 @@ builder.Services.AddIdentity<UserEntity, RoleEntity>()
 builder.Services.AddBearer(builder.Configuration.GetValue<string>("Jwt:Secret")!);
 
 builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
@@ -39,6 +42,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
+
 builder.Services.AddHangfire(x =>
     x.UsePostgreSqlStorage(options => 
         options.UseNpgsqlConnection(builder.Configuration.GetConnectionString("Default"))));
@@ -74,6 +78,7 @@ app.MapControllers();
 
 app.UseHangfireDashboard();
 
-RecurringJob.AddOrUpdate<PointsService>("UpdatePointsJob", x => x.AddPointsAsync(), @"0 4 * * *");
+// schedule hangfire job to add points every day
+RecurringJob.AddOrUpdate<PointsService>(Jobs.AddPointsJobName, x => x.AddPointsAsync(), Jobs.Frequency);
 
 app.Run();

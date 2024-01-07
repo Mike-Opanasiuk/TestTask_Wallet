@@ -30,7 +30,10 @@ public class CreateCardCommandHandler : IRequestHandler<CreateCardCommand>
 
     public async Task Handle(CreateCardCommand request, CancellationToken cancellationToken)
     {
-        await unitOfWork.Cards.InsertAsync(mapper.Map<CardEntity>(request));
+        var card = mapper.Map<CardEntity>(request);
+        card.MaxLimit = AppConstant.CardLimits.Default;
+
+        await unitOfWork.Cards.InsertAsync(card);
 
         var changesCount = await unitOfWork.SaveChangesAsync();
 

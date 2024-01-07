@@ -1,9 +1,4 @@
-﻿using Hangfire;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Wallet.Core.Entities;
-using Wallet.Infrastructure;
+﻿using Wallet.Core.Entities;
 using Wallet.Infrastructure.UnitOfWork.Abstract;
 
 namespace Wallet.Web.Services;
@@ -54,7 +49,7 @@ public class PointsService
         }
     }
 
-    static int GetDaysInQuarter(DateTime date)
+    private static int GetDaysInQuarter(DateTime date)
     {
         int quarter = (date.Month - 1) / 3 + 1;
         int startMonth = (quarter - 1) * 3 + 1;
