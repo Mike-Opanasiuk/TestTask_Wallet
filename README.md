@@ -7,6 +7,7 @@
     - Hangfire job to add points every day at 4 am
     - Fluent Validation to validate objects that are being passed in controllers
     - Fluent API to validate objects on a db layer
+    - The project also contains ClassDiagram.drawio file with class diagram that can be opened at https://draw.io
 
 ### To start working with the API, open git bash and run command:
     git clone https://github.com/Mike-Opanasiuk/TestTask_Wallet.git
