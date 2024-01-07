@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Wallet.Infrastructure;
@@ -11,9 +12,11 @@ using Wallet.Infrastructure;
 namespace Wallet.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240106175846_AddPointEntity")]
+    partial class AddPointEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,7 +157,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Cards", (string)null);
+                    b.ToTable("CardEntity");
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.PointEntity", b =>
@@ -183,7 +186,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasIndex("CardId");
 
-                    b.ToTable("Points", (string)null);
+                    b.ToTable("PointEntity");
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.RoleEntity", b =>
@@ -221,140 +224,6 @@ namespace Wallet.Infrastructure.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
-                });
-
-            modelBuilder.Entity("Wallet.Core.Entities.TransactionCategoryEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("BackgroundImage")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<string>("Icon")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("ModifiedOn")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TransactionCategories", (string)null);
-                });
-
-            modelBuilder.Entity("Wallet.Core.Entities.TransactionEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("AuthorizedUserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CardId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("ModifiedOn")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<Guid>("StatusId")
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("Sum")
-                        .HasColumnType("numeric");
-
-                    b.Property<Guid>("TypeId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorizedUserId");
-
-                    b.HasIndex("CardId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("StatusId");
-
-                    b.HasIndex("TypeId");
-
-                    b.ToTable("Transactions", (string)null);
-                });
-
-            modelBuilder.Entity("Wallet.Core.Entities.TransactionStatusEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<DateTime>("ModifiedOn")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TransactionStatuses", (string)null);
-                });
-
-            modelBuilder.Entity("Wallet.Core.Entities.TransactionTypeEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<DateTime>("ModifiedOn")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TransactionTypes", (string)null);
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.UserEntity", b =>
@@ -508,67 +377,9 @@ namespace Wallet.Infrastructure.Migrations
                     b.Navigation("Card");
                 });
 
-            modelBuilder.Entity("Wallet.Core.Entities.TransactionEntity", b =>
-                {
-                    b.HasOne("Wallet.Core.Entities.UserEntity", "AuthorizedUser")
-                        .WithMany("Transactions")
-                        .HasForeignKey("AuthorizedUserId");
-
-                    b.HasOne("Wallet.Core.Entities.CardEntity", "Card")
-                        .WithMany()
-                        .HasForeignKey("CardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Wallet.Core.Entities.TransactionCategoryEntity", "Category")
-                        .WithMany("Transactions")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Wallet.Core.Entities.TransactionStatusEntity", "Status")
-                        .WithMany("Transactions")
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Wallet.Core.Entities.TransactionTypeEntity", "Type")
-                        .WithMany("Transactions")
-                        .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AuthorizedUser");
-
-                    b.Navigation("Card");
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Status");
-
-                    b.Navigation("Type");
-                });
-
-            modelBuilder.Entity("Wallet.Core.Entities.TransactionCategoryEntity", b =>
-                {
-                    b.Navigation("Transactions");
-                });
-
-            modelBuilder.Entity("Wallet.Core.Entities.TransactionStatusEntity", b =>
-                {
-                    b.Navigation("Transactions");
-                });
-
-            modelBuilder.Entity("Wallet.Core.Entities.TransactionTypeEntity", b =>
-                {
-                    b.Navigation("Transactions");
-                });
-
             modelBuilder.Entity("Wallet.Core.Entities.UserEntity", b =>
                 {
                     b.Navigation("Cards");
-
-                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

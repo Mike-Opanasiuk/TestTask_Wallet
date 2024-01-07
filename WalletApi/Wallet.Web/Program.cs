@@ -4,9 +4,18 @@ using Wallet.Application;
 using Wallet.Application.Features.AccountFeatures.Services;
 using Wallet.Core.Entities;
 using Wallet.Infrastructure;
+using Wallet.Infrastructure.UnitOfWork.Abstract;
+using Wallet.Infrastructure.UnitOfWork;
 using Wallet.Web;
 using Wallet.Web.Extensions;
 using Wallet.Web.Middlewares.ExceptionHandlingMiddleware;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Hangfire;
+using Hangfire.PostgreSql;
+using Wallet.Web.Services;
+using static Wallet.Shared.AppConstant;
+using Wallet.Shared.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,11 +31,26 @@ builder.Services.AddIdentity<UserEntity, RoleEntity>()
 builder.Services.AddBearer(builder.Configuration.GetValue<string>("Jwt:Secret")!);
 
 builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+       // to ingore loop inside entities that reference each other
+       options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+   );
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwagger();
+
+builder.Services.AddHangfire(x =>
+    x.UsePostgreSqlStorage(options => 
+        options.UseNpgsqlConnection(builder.Configuration.GetConnectionString("Default"))));
+
+builder.Services.AddHangfireServer();
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining(typeof(FluentValidationAssemblyReference), ServiceLifetime.Transient);
 
 builder.Services.AddMediatR(conf => conf.RegisterServicesFromAssembly(typeof(MediatrAssemblyReference).Assembly));
 
@@ -51,5 +75,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseHangfireDashboard();
+
+// schedule hangfire job to add points every day
+RecurringJob.AddOrUpdate<PointsService>(Jobs.AddPointsJobName, x => x.AddPointsAsync(), Jobs.Frequency);
 
 app.Run();

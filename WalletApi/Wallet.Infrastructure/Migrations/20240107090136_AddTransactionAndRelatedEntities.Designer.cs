@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Wallet.Infrastructure;
@@ -11,9 +12,11 @@ using Wallet.Infrastructure;
 namespace Wallet.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240107090136_AddTransactionAndRelatedEntities")]
+    partial class AddTransactionAndRelatedEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,7 +157,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Cards", (string)null);
+                    b.ToTable("Cards");
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.PointEntity", b =>
@@ -183,7 +186,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasIndex("CardId");
 
-                    b.ToTable("Points", (string)null);
+                    b.ToTable("Points");
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.RoleEntity", b =>
@@ -251,7 +254,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransactionCategories", (string)null);
+                    b.ToTable("TransactionCategories");
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.TransactionEntity", b =>
@@ -264,9 +267,6 @@ namespace Wallet.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CardId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedOn")
@@ -283,13 +283,16 @@ namespace Wallet.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("now()");
 
-                    b.Property<Guid>("StatusId")
-                        .HasColumnType("uuid");
-
                     b.Property<decimal>("Sum")
                         .HasColumnType("numeric");
 
-                    b.Property<Guid>("TypeId")
+                    b.Property<Guid>("TransactionCategoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TransactionStatusId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TransactionTypeId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -298,13 +301,13 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasIndex("CardId");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("TransactionCategoryId");
 
-                    b.HasIndex("StatusId");
+                    b.HasIndex("TransactionStatusId");
 
-                    b.HasIndex("TypeId");
+                    b.HasIndex("TransactionTypeId");
 
-                    b.ToTable("Transactions", (string)null);
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.TransactionStatusEntity", b =>
@@ -329,7 +332,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransactionStatuses", (string)null);
+                    b.ToTable("TransactionStatuses");
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.TransactionTypeEntity", b =>
@@ -354,7 +357,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransactionTypes", (string)null);
+                    b.ToTable("TransactionTypes");
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.UserEntity", b =>
@@ -520,21 +523,21 @@ namespace Wallet.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Wallet.Core.Entities.TransactionCategoryEntity", "Category")
+                    b.HasOne("Wallet.Core.Entities.TransactionCategoryEntity", "TransactionCategory")
                         .WithMany("Transactions")
-                        .HasForeignKey("CategoryId")
+                        .HasForeignKey("TransactionCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Wallet.Core.Entities.TransactionStatusEntity", "Status")
+                    b.HasOne("Wallet.Core.Entities.TransactionStatusEntity", "TransactionStatus")
                         .WithMany("Transactions")
-                        .HasForeignKey("StatusId")
+                        .HasForeignKey("TransactionStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Wallet.Core.Entities.TransactionTypeEntity", "Type")
+                    b.HasOne("Wallet.Core.Entities.TransactionTypeEntity", "TransactionType")
                         .WithMany("Transactions")
-                        .HasForeignKey("TypeId")
+                        .HasForeignKey("TransactionTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -542,11 +545,11 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.Navigation("Card");
 
-                    b.Navigation("Category");
+                    b.Navigation("TransactionCategory");
 
-                    b.Navigation("Status");
+                    b.Navigation("TransactionStatus");
 
-                    b.Navigation("Type");
+                    b.Navigation("TransactionType");
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.TransactionCategoryEntity", b =>

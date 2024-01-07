@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Wallet.Application.Features.AccountFeatures.Dtos;
 using Wallet.Application.Features.AccountFeatures.Services;
+using Wallet.Application.Features.CardFeatures.Commands;
 using Wallet.Core.Entities;
 using Wallet.Shared;
 using Wallet.Shared.CustomExceptions;
@@ -47,5 +49,13 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, AuthResp
             Token = token,
             User = mapper.Map<UserDto>(user)
         };
+    }
+}
+
+public class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
+{
+    public RegisterUserCommandValidator()
+    {
+        RuleFor(c => c.Name).NotNull().NotEmpty();
     }
 }

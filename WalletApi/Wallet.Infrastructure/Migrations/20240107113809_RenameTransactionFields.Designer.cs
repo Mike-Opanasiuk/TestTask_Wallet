@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Wallet.Infrastructure;
@@ -11,9 +12,11 @@ using Wallet.Infrastructure;
 namespace Wallet.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240107113809_RenameTransactionFields")]
+    partial class RenameTransactionFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,7 +157,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Cards", (string)null);
+                    b.ToTable("Cards");
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.PointEntity", b =>
@@ -183,7 +186,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasIndex("CardId");
 
-                    b.ToTable("Points", (string)null);
+                    b.ToTable("Points");
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.RoleEntity", b =>
@@ -251,7 +254,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransactionCategories", (string)null);
+                    b.ToTable("TransactionCategories");
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.TransactionEntity", b =>
@@ -304,7 +307,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Transactions", (string)null);
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.TransactionStatusEntity", b =>
@@ -329,7 +332,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransactionStatuses", (string)null);
+                    b.ToTable("TransactionStatuses");
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.TransactionTypeEntity", b =>
@@ -354,7 +357,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransactionTypes", (string)null);
+                    b.ToTable("TransactionTypes");
                 });
 
             modelBuilder.Entity("Wallet.Core.Entities.UserEntity", b =>
