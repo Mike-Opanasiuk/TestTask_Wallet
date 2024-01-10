@@ -1,0 +1,31 @@
+version: "3.9"
+networks:
+  wallet-app-net:
+    driver: bridge
+services:
+  app:
+    container_name: wallet-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5080:80"
+    networks:
+      - wallet-app-net
+    depends_on:
+      - postgres_db
+  postgres_db:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: Wallets
+    ports:
+      - "5432:5432"
+    networks:
+      - wallet-app-net
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+volumes:
+  postgres-data:

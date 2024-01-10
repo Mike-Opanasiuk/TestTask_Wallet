@@ -9,6 +9,11 @@
     - Fluent API to validate objects on a db layer
     - The project also contains ClassDiagram.drawio file with class diagram that can be opened at https://draw.io
 
+### It also supports Docker
+##### To run application in container, open directory containing `docker-compose.yml` file 
+and run `docker-compose up` 
+    
+
 ### To start working with the API, open git bash and run command:
     git clone https://github.com/Mike-Opanasiuk/TestTask_Wallet.git
 

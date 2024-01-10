@@ -63,7 +63,7 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseSeed();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment()) // allow to use Swagger in prod mode
 {
     app.UseSwagger();
     app.UseSwaggerUI();
