@@ -10,7 +10,7 @@ namespace Wallet.Web.Controllers
         [HttpGet]
         public string Get()
         {
-            return "Test";
+            return "Test edited";
         }
     }
 }
